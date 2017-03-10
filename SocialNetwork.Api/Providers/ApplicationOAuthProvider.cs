@@ -27,7 +27,7 @@ namespace SocialNetwork.Api.Providers {
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(context.UserName);
+            AuthenticationProperties properties = CreateProperties(user.UserName);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
 
             context.Validated(ticket);

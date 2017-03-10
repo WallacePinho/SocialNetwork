@@ -14,7 +14,9 @@ namespace SocialNetwork.Api.App_Start {
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var dbContext = context.Get<ApplicationDbContext>();
+            var userStore = new UserStore<ApplicationUser>(dbContext);
+            var manager = new ApplicationUserManager(userStore);
 
             manager.UserValidator = new UserValidator<ApplicationUser>(manager) {
                 AllowOnlyAlphanumericUserNames = false,
