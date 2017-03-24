@@ -23,6 +23,7 @@ namespace SocialNetwork.Api.Providers {
 
             if (user == null) {
                 context.SetError("invalid_grant", "The username or password is incorrect.");
+                return;
             }
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
