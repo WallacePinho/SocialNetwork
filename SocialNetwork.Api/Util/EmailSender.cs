@@ -49,7 +49,6 @@ namespace SocialNetwork.Api.Util {
             body.Append($"Click <a href=\"{requestUrl}\">here<a/> to confirm your e-mail address.");
 
             await SendEmail(to, "Email Confirmation", body.ToString());
-            Console.Write("aasdf");            
         }
     }
 
