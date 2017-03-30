@@ -64,7 +64,7 @@ namespace SocialNetwork.Web.Controllers {
                     { "password", model.Password }
                 };
 
-                using(var requestContent = new FormUrlEncodedContent(data)) {
+                using (var requestContent = new FormUrlEncodedContent(data)) {
                     var response = await _client.PostAsync("/Token", requestContent);
 
                     if (response.IsSuccessStatusCode) {
@@ -76,7 +76,7 @@ namespace SocialNetwork.Web.Controllers {
 
                         //Add user to session
                         HttpContext.Session.Add("User", model.Email);
-                    }else {
+                    } else {
                         ModelState.AddModelError("", "");
                     }
                 }
@@ -90,6 +90,22 @@ namespace SocialNetwork.Web.Controllers {
         public ActionResult LogOff() {
             _tokenHelper.AccessToken = null;
             HttpContext.Session.Remove("User");
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        public async Task<ActionResult> Confirm(string token, string u) {
+            if (ModelState.IsValid) {
+                var encodedToken = HttpUtility.UrlEncode(token);
+                var encodedUserId = HttpUtility.UrlEncode(u);
+
+                var response = await _client.GetAsync(_client.BaseAddress + $"api/Account/Confirm?token={encodedToken}&userId={encodedUserId}");
+
+                if (response.IsSuccessStatusCode) {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                }
+            }
+
             return RedirectToAction("Index", "Home");
         }
 

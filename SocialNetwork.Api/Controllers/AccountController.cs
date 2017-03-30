@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity.Owin;
 using SocialNetwork.Api.App_Start;
 using SocialNetwork.Api.Models;
 using SocialNetwork.Api.Models.Account;
+using SocialNetwork.Api.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,21 +39,37 @@ namespace SocialNetwork.Api.Controllers {
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
-            if (!result.Succeeded) {
+
+            if (result.Succeeded) {
+                await SendEmailConfirmation(model.Email);
+            } else {
                 return GetErrorResult(result);
             }
             return Ok();
         }
 
+        // GET: api/Account/Confirm
+        [AllowAnonymous]
+        [Route("Confirm")]
+        [HttpGet]
+        public async Task<IHttpActionResult> Confirm(string token, string userId) {
+            var result = await UserManager.ConfirmEmailAsync(userId, token);
+            if (!result.Succeeded) {
+                return GetErrorResult(result);
+            }
+
+            return Ok();
+        }
+
         private IHttpActionResult GetErrorResult(IdentityResult result) {
-            if(result == null) {
+            if (result == null) {
                 return InternalServerError();
             }
 
             if (!result.Succeeded) {
-                if(result.Errors != null) {
+                if (result.Errors != null) {
 
-                    foreach(string error in result.Errors) {
+                    foreach (string error in result.Errors) {
                         ModelState.AddModelError("", error);
                     }
                 }
@@ -66,9 +83,16 @@ namespace SocialNetwork.Api.Controllers {
             return null;
         }
 
+        private async Task SendEmailConfirmation(string email) {
+            var user = await UserManager.FindByEmailAsync(email);
+            string token = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            EmailSender emailSender = new EmailSender();
+            await emailSender.SendEmailConfirmation(token, email, user.Id);
+        }
+
         protected override void Dispose(bool disposing) {
 
-            if(disposing && _userManager != null) {
+            if (disposing && _userManager != null) {
                 _userManager.Dispose();
                 _userManager = null;
             }
