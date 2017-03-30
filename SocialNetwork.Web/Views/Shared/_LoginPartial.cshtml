@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNet.Identity
-@if (HttpContext.Current.Session["User"] != null)
+﻿@if (HttpContext.Current.Session["User"] != null)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
