@@ -73,6 +73,9 @@ namespace SocialNetwork.Web.Controllers {
                         var tokenData = JObject.Parse(responseContent);
 
                         _tokenHelper.AccessToken = tokenData["access_token"];
+
+                        //Add user to session
+                        HttpContext.Session.Add("User", model.Email);
                     }else {
                         ModelState.AddModelError("", "");
                     }
@@ -80,6 +83,14 @@ namespace SocialNetwork.Web.Controllers {
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff() {
+            _tokenHelper.AccessToken = null;
+            HttpContext.Session.Remove("User");
+            return RedirectToAction("Index", "Home");
         }
 
         protected override void Dispose(bool disposing) {
