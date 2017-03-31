@@ -85,6 +85,7 @@ namespace SocialNetwork.Web.Controllers {
             return View(model);
         }
 
+        // POST: Account/Logoff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff() {
@@ -93,21 +94,59 @@ namespace SocialNetwork.Web.Controllers {
             return RedirectToAction("Index", "Home");
         }
 
-
+        // GET: Account/Confirm
         public async Task<ActionResult> Confirm(string token, string u) {
             if (ModelState.IsValid) {
                 var encodedToken = HttpUtility.UrlEncode(token);
                 var encodedUserId = HttpUtility.UrlEncode(u);
 
-                var response = await _client.GetAsync(_client.BaseAddress + $"api/Account/Confirm?token={encodedToken}&userId={encodedUserId}");
-
-                if (response.IsSuccessStatusCode) {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                }
+                var response = await _client.GetAsync(_client.BaseAddress + $"api/Account/Confirm?token={encodedToken}&userId={encodedUserId}");                
             }
 
             return RedirectToAction("Index", "Home");
         }
+
+        // GET: Account/PasswordRecovery
+        public ActionResult PasswordRecovery() {
+            return View();
+        }
+
+        // POST: Account/PasswordRecovery
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> PasswordRecovery(string email) {
+            var data = new Dictionary<string, string>() {
+                    { "Email", email },
+
+            };
+            using (var requestContent = new FormUrlEncodedContent(data)) {
+                var response = await _client.PostAsync("api/Account/PasswordRecovery", requestContent);
+            }
+            return View();
+        }
+
+        // GET: Account/ChangePassword
+        public ActionResult ChangePassword(string token, string u) {
+            ViewBag.Token = token;
+            ViewBag.UserId = u;
+            return View();
+        }
+
+        // POST: Account/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangePassword(PasswordRecoveryViewModel model) {
+            var data = new Dictionary<string, string>() {
+                {"UserId", model.UserId },
+                {"Token", model.Token },
+                {"NewPassword", model.NewPassword }
+            };
+            using(var requestContent = new FormUrlEncodedContent(data)) {
+                var response = await _client.PostAsync("api/Account/ChangePassword", requestContent);
+            }
+            return View();
+        }
+
 
         protected override void Dispose(bool disposing) {
             if (disposing && _client != null) {

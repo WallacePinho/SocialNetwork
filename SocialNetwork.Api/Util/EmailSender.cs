@@ -50,6 +50,16 @@ namespace SocialNetwork.Api.Util {
 
             await SendEmail(to, "Email Confirmation", body.ToString());
         }
+
+        public async Task SendPasswordRecovery(string token, string to, string userId) {
+            StringBuilder body = new StringBuilder();
+            var encodedToken = HttpUtility.UrlEncode(token);
+            var encodedUserId = HttpUtility.UrlEncode(userId);
+            var requestUrl = $"https://localhost:44345/Account/ChangePassword?token={encodedToken}&u={encodedUserId}";
+            body.Append($"Click <a href=\"{requestUrl}\">here<a/> to change your password.");
+
+            await SendEmail(to, "Password Recovery", body.ToString());
+        }
     }
 
     public class EmailConfig {

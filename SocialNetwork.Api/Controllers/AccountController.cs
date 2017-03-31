@@ -61,6 +61,29 @@ namespace SocialNetwork.Api.Controllers {
             return Ok();
         }
 
+        [AllowAnonymous]
+        [Route("PasswordRecovery")]
+        public async Task<IHttpActionResult> PasswordRecovery(PasswordRecoveryViewModel model) {
+            var user = UserManager.FindByEmail(model.Email);
+            if (user != null) {
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                EmailSender sender = new EmailSender();
+                await sender.SendPasswordRecovery(token, model.Email, user.Id);
+            }
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [Route("ChangePassword")]
+        public async Task<IHttpActionResult> ChangePassword(PasswordRecoveryViewModel model) {
+            var result = await UserManager.ResetPasswordAsync(model.UserId, model.Token, model.NewPassword);
+
+            if (!result.Succeeded) {
+                GetErrorResult(result);
+            }
+            return Ok();
+        }
+
         private IHttpActionResult GetErrorResult(IdentityResult result) {
             if (result == null) {
                 return InternalServerError();
