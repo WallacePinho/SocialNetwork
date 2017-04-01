@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using SocialNetwork.Api.Models;
 
 namespace SocialNetwork.Api.Providers {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider {
@@ -28,18 +29,25 @@ namespace SocialNetwork.Api.Providers {
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.UserName);
+            AuthenticationProperties properties = CreateProperties(user);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
 
             context.Validated(ticket);
         }
 
-        public static AuthenticationProperties CreateProperties(string userName) {
+        public static AuthenticationProperties CreateProperties(ApplicationUser user) {
             IDictionary<string, string> data = new Dictionary<string, string>() {
-                {"userName", userName }
+                {"user_id", user.Id }
             };
 
             return new AuthenticationProperties(data);
         }
+
+        public override async Task TokenEndpoint(OAuthTokenEndpointContext context) {
+            foreach(var pair in context.Properties.Dictionary) {
+                context.AdditionalResponseParameters.Add(pair.Key, pair.Value);
+            }
+        }
+
     }
 }
