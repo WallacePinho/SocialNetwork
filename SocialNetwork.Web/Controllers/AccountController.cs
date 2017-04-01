@@ -40,7 +40,7 @@ namespace SocialNetwork.Web.Controllers {
                 var response = await _client.PostAsJsonAsync("api/Account/Register", model);
 
                 if (response.IsSuccessStatusCode) {
-                    //ToDo
+                    HttpContext.Response.RedirectToRoute("Login");
                 } else {
                     //ToDo
                 }
@@ -73,9 +73,10 @@ namespace SocialNetwork.Web.Controllers {
                         var tokenData = JObject.Parse(responseContent);
 
                         _tokenHelper.AccessToken = tokenData["access_token"];
-
+                        _tokenHelper.AccessToken = tokenData["user_id"];
                         //Add user to session
                         HttpContext.Session.Add("User", model.Email);
+                        return RedirectToAction("Index", "Home");
                     } else {
                         ModelState.AddModelError("", "");
                     }
