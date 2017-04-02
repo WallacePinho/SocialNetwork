@@ -73,9 +73,9 @@ namespace SocialNetwork.Web.Controllers {
                         var tokenData = JObject.Parse(responseContent);
 
                         _tokenHelper.AccessToken = tokenData["access_token"];
-                        _tokenHelper.AccessToken = tokenData["user_id"];
-                        //Add user to session
-                        HttpContext.Session.Add("User", model.Email);
+                        _tokenHelper.UserId = tokenData["user_id"];
+                        _tokenHelper.UserName = tokenData["user_name"];
+
                         return RedirectToAction("Index", "Home");
                     } else {
                         ModelState.AddModelError("", "");
@@ -91,7 +91,8 @@ namespace SocialNetwork.Web.Controllers {
         [ValidateAntiForgeryToken]
         public ActionResult LogOff() {
             _tokenHelper.AccessToken = null;
-            HttpContext.Session.Remove("User");
+            _tokenHelper.UserId = null;
+            _tokenHelper.UserName = null;
             return RedirectToAction("Index", "Home");
         }
 
@@ -117,8 +118,7 @@ namespace SocialNetwork.Web.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> PasswordRecovery(string email) {
             var data = new Dictionary<string, string>() {
-                    { "Email", email },
-
+                    { "Email", email }
             };
             using (var requestContent = new FormUrlEncodedContent(data)) {
                 var response = await _client.PostAsync("api/Account/PasswordRecovery", requestContent);

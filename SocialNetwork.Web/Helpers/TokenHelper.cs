@@ -19,5 +19,10 @@ namespace SocialNetwork.Web.Helpers {
             get { return Current.Session != null ? Current.Session["UserId"] : null; }
             set { if (Current.Session != null) Current.Session["UserId"] = value; }
         }
+
+        public object UserName {
+            get { return Current.Session != null ? Current.Session["UserName"] : null; }
+            set { if (Current.Session != null) Current.Session["UserName"] = value; }
+        }
     }
 }
