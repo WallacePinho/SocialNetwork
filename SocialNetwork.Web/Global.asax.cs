@@ -14,5 +14,11 @@ namespace SocialNetwork.Web
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
+
+        // Redirect all http requests to https
+        //protected void Application_BeginRequest() {
+        //    if (!Context.Request.IsSecureConnection)
+        //        Response.Redirect(Context.Request.Url.ToString().Replace("http:", "https:"));
+        //}
     }
 }
