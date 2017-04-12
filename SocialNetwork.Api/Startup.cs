@@ -5,6 +5,8 @@ using System.Web;
 using Microsoft.Owin;
 using Owin;
 using System.Web.Http;
+using System.Data.Entity;
+using SocialNetwork.Api.Models;
 
 [assembly: OwinStartup(typeof(SocialNetwork.Api.Startup))]
 
@@ -18,6 +20,8 @@ namespace SocialNetwork.Api {
 
             WebApiConfig.Register(config);
             app.UseWebApi(config);
+
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationDbContext>());
         }
     }
 }
