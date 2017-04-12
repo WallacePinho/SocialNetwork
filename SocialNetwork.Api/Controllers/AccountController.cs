@@ -3,7 +3,7 @@ using Microsoft.AspNet.Identity.Owin;
 using SocialNetwork.Api.App_Start;
 using SocialNetwork.Api.Models;
 using SocialNetwork.Api.Models.Account;
-using SocialNetwork.Api.Util;
+using SocialNetwork.Api.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

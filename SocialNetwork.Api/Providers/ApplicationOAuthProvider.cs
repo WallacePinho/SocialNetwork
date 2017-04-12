@@ -38,7 +38,8 @@ namespace SocialNetwork.Api.Providers {
         public static AuthenticationProperties CreateProperties(ApplicationUser user) {
             IDictionary<string, string> data = new Dictionary<string, string>() {
                 {"user_id", user.Id },
-                {"user_name", user.UserName }
+                {"user_name", user.UserName },
+                {"has_profile", user.HasProfile.ToString() }
             };
 
             return new AuthenticationProperties(data);

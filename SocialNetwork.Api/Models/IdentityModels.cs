@@ -2,6 +2,8 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
@@ -11,7 +13,7 @@ using System.Web;
 namespace SocialNetwork.Api.Models {
     public class ApplicationUser : IdentityUser {
         public ApplicationUserProfile Profile { get; set; }
-
+        public bool HasProfile { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType) {
             return await manager.CreateIdentityAsync(this, authenticationType);
         }
@@ -19,9 +21,14 @@ namespace SocialNetwork.Api.Models {
 
     public class ApplicationUserProfile {
         public int Id { get; set; }
+        public string ProfilePicture { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+
+        [StringLength(450)]
+        [Index(IsUnique = true)]
+        public string UserName { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>{
@@ -34,5 +41,6 @@ namespace SocialNetwork.Api.Models {
         }
 
         public DbSet<ApplicationUserProfile> ApplicationUserProfiles { get; set; }
+        
     }
 }

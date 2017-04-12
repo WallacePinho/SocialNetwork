@@ -24,5 +24,10 @@ namespace SocialNetwork.Web.Helpers {
             get { return Current.Session != null ? Current.Session["UserName"] : null; }
             set { if (Current.Session != null) Current.Session["UserName"] = value; }
         }
+
+        public object HasProfile {
+            get { return Current.Session != null ? Current.Session["HasProfile"] : false; }
+            set { if (Current.Session != null) Current.Session["HasProfile"] = value; }
+        }
     }
 }

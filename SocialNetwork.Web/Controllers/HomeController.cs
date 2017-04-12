@@ -30,6 +30,9 @@ namespace SocialNetwork.Web.Controllers {
         // GET: Home
         [Authentication]
         public ActionResult Index() {
+            if (_tokenHelper.HasProfile != null && _tokenHelper.HasProfile.ToString().ToLower() == "false") {
+                return RedirectToAction("Create", "Profile");
+            }
             return View();
         }
 

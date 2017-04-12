@@ -75,6 +75,7 @@ namespace SocialNetwork.Web.Controllers {
                         _tokenHelper.AccessToken = tokenData["access_token"];
                         _tokenHelper.UserId = tokenData["user_id"];
                         _tokenHelper.UserName = tokenData["user_name"];
+                        _tokenHelper.HasProfile = tokenData["has_profile"];
 
                         return RedirectToAction("Index", "Home");
                     } else {
