@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace SocialNetwork.Api.Util {
+namespace SocialNetwork.Api.Core {
     public class EmailSender {
         private EmailConfig emailConfig;
         private SmtpClient smtpClient;
